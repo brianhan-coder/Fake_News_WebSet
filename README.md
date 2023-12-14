@@ -4,11 +4,11 @@
 
 Based on. netcore
 
-#### 软件架构
+#### Software Architecture
 
-面向接口编程。
+Interface-oriented programming.
 
-#### 技术说明
+#### Technical Description
 
 1. .NetCore6
 2. MySql
@@ -18,12 +18,11 @@ Based on. netcore
 6. CsvHelper.Excel.Core
 7. Layui
 
-#### 使用说明
-1. 用Visual Studio 2022打开项目。
-2. 右键ClronPy，选择发布，选择文件夹，选择要发布的路径，点击完成。
-3. 点击所以设置，选择部署模式为独立，部署目标运行时为win-64可以运行在Windows上、Linux-64可运行在Linux上，点击保存，点击发布。
-4. 在目标服务器安装好数据库 MySql，还原sql目录下的db.sql文件。
-5. 在项目根目录下appsettings.json配置数据库链接字符串。
-6. 在Windows环境下直接运行发布后的目录里的ClronPy.exe，在Linux下运行./ClronPy
-
+#### Instructions for use
+1. Open the project with Visual Studio 2022.
+2. Right-click ClronPy, select Publish, select the folder, select the path where you want to publish, and click Finish.
+3. Click So Setup, select Deployment Mode as Standalone, deploy the target runtime as Win-64 can run on Windows, Linux-64 can run on Linux, click Save, click Publish.
+4. Install the database MySql on the target server and restore the db.sql file in the sql directory.
+5. Configure the database link string in appsettings.json in the project root directory.
+6. Run ClronPy.exe directly from the published directory under Windows environment, under Linux run . /ClronPy
 
