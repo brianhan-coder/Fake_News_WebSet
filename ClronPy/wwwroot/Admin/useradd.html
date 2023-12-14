@@ -1,0 +1,152 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UserCreate</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.staticfile.org/layui/2.9.0/css/layui.css" rel="stylesheet">
+</head>
+<body>
+    <form action="" id="formadd" method="post" class="layui-form" lay-filter="formadd">
+        <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">Uid</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="uid" lay-verify="number" placeholder="Uid" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Authon</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="author" lay-verify="required" placeholder="Author" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Topic</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="topic" lay-verify="required" placeholder="topic" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">UpLoad</label>
+                <div class="layui-input-inline">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn layui-btn-normal" id="ID-upload-demo-files">Select multiple files</button>
+                        <div class="layui-upload-list">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col style="min-width: 100px;">
+                                    <!--<col width="150">
+                            <col width="260">-->
+                                    <col width="150">
+                                </colgroup>
+                                <thead>
+                                <th>fileName</th>
+                                <!--<th>大小</th>
+                        <th>上传进度</th>-->
+                                <th>operate</th>
+                                </thead>
+                                <tbody id="ID-upload-demo-files-list"></tbody>
+                            </table>
+                        </div>
+                        <!--<button type="button" class="layui-btn" id="ID-upload-demo-files-action">开始上传</button>-->
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="layui-form-item layui-hide">
+                <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="OK">
+            </div>
+        </div>
+    </form>
+    <script src="//unpkg.com/layui@2.9.0/dist/layui.js"></script>
+    <script>
+            layui.config({
+                base: '' //静态资源所在路径
+            }).extend({
+                index: '/Admin/lib/index' //主入口模块
+            }).use(['index', 'form','upload'], function () {
+                var upload = layui.upload;
+                var element = layui.element;
+                var $ = layui.$
+                    , form = layui.form;
+                var uploadListIns = upload.render({
+                    elem: '#ID-upload-demo-files',
+                    elemList: $('#ID-upload-demo-files-list'), // 列表元素对象
+                    url: '', // 实际使用时改成您自己的上传接口即可。
+                    accept: 'file',
+                    multiple: true,
+                    number: 3,
+                    auto: false,
+                    bindAction: '#ID-upload-demo-files-action',
+                    choose: function (obj) {
+                        var that = this;
+                        var files = this.files = obj.pushFile(); // 将每次选择的文件追加到文件队列
+                        // 读取本地文件
+                        obj.preview(function (index, file, result) {
+                            var tr = $(['<tr id="upload-' + index + '">',
+                            '<td>' + file.name + '</td>',
+                           /* '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>',*/
+                            '<td><div class="layui-progress" lay-filter="progress-demo-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>',
+                                '<td>',
+                                '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>',
+                                '</td>',
+                                '</tr>'].join(''));
+
+                            // 删除
+                            tr.find('.demo-delete').on('click', function () {
+                                delete files[index]; // 删除对应的文件
+                                tr.remove(); // 删除表格行
+                                // 清空 input file 值，以免删除后出现同名文件不可选
+                                uploadListIns.config.elem.next()[0].value = '';
+                            });
+
+                            that.elemList.append(tr);
+                            element.render('progress'); // 渲染新加的进度条组件
+                        });
+                    },
+                    done: function (res, index, upload) { // 成功的回调
+                        var that = this;
+                        // if(res.code == 0){ // 上传成功
+                        var tr = that.elemList.find('tr#upload-' + index)
+                        var tds = tr.children();
+                        tds.eq(3).html(''); // 清空操作
+                        delete this.files[index]; // 删除文件队列已经上传成功的文件
+                        return;
+                        //}
+                        this.error(index, upload);
+                    }
+       
+                });
+
+                $("#LAY-user-front-submit").click(function () {
+
+                    var formData = new FormData(document.querySelector("#formadd"));
+                    if (formData.get("username") == "" || formData.get("password") == "") {
+                        return false;
+                    }
+                    $.ajax({
+                        url: "/api/Home/UserCreate",
+                        type: "post",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            window.parent.location.reload();
+                        }
+                    });
+
+                });
+
+
+            })
+    </script>
+</body>
+</html>

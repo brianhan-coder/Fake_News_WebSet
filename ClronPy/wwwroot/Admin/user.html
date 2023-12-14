@@ -1,0 +1,200 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UserManage</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.staticfile.org/layui/2.9.0/css/layui.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Admin/style/admin.css" media="all">
+</head>
+<body>
+
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">UID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="uid" placeholder="UID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Author</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="author" placeholder="Author" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">SubmitTime</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="submittime" placeholder="SubmitTime" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+ 
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card-body">
+                <div style="padding-bottom: 10px;">
+                    <button class="layui-btn layuiadmin-btn-list" data-type="add">Create</button>
+                </div>
+                <table id="userList" lay-filter="userList"></table>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="//unpkg.com/layui@2.9.0/dist/layui.js"></script>
+    <script>
+        layui.config({
+            base: '' //静态资源所在路径
+        }).extend({
+            index: '/Admin/lib/index' //主入口模块
+        }).use(['index', 'contlist', 'table'], function(){
+        var table = layui.table
+        ,form = layui.form;
+        //事件-搜索
+        form.on('submit(LAY-app-contlist-search)', function(data){
+            var field = data.field;
+            console.info(field);
+
+          //执行重载
+            table.reload('userListTable', {
+            where: field
+          });
+        });
+
+
+
+            var tableIns = table.render({
+                elem: '#userList',
+                url: '/api/home/GetUserList',
+                cellMinWidth: 95,
+                page: true,
+                height: "full-185",
+                limits: [10, 20, 40, 60],
+                limit: 10,
+                id: "userListTable",
+                cols: [[
+                    { type: "checkbox", fixed: "left", width: 50 },
+                    { field: 'id', title: 'Id', width: 100, align: "center", sort: true },
+                    { field: 'uid', title: 'Uid', width: 200, align: 'center' },
+                    { field: 'author', title: 'Author', width: 120, align: 'center' },
+                    { field: 'topic', title: 'Topic', width: 100, align: 'center' },
+                    {
+                        field: 'accessLink', title: 'AccessLink', minwidth: 300, align: 'center', templet: function (d) {
+                            return '<a class="layui-table-link" href="javascript:void(0);" lay-event="link">' + d.accessLink + '</a>';  
+                        }
+                    },
+                    { field: 'featureLink', title: 'FeatureLink', width: 100, align: 'center' },
+                    { field: 'submitTime', title: 'SubmitTime', align: 'center', width:200 },
+                    {
+                        title: 'Operation', width: 185, fixed: "right", align: "center", templet: function (d) {
+                           /* var str = "<a class=\"layui-btn layui-btn-xs\" lay-event=\"edit\">Edit</a>" +*/
+                                //"<a class=\"layui-btn layui-btn-xs layui-btn-warm\" lay-event=\"usable\">" + (d.state != "2" ? '启用' : '禁用') + "</a>" +
+                             var str = "<a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"del\">Delete</a>";
+                            return str;
+                        }
+                    }
+                ]]
+            });
+
+
+
+        var $ = layui.$, active = {
+            batchdel: function () {
+ 
+          },
+          add: function(){
+            layer.open({
+              type: 2
+              ,title: 'Create'
+              ,content: 'useradd.html'
+              ,maxmin: true
+              ,area: ['650px', '550px']
+              , btn: ['OK', 'cancel']
+              ,yes: function(index, layero){
+                //点击确认触发 iframe 内容中的按钮提交
+                  var submit = layero.find('iframe').contents().find("#LAY-user-front-submit");
+                submit.click();
+              }
+            });
+            }
+        };
+
+        $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+          var type = $(this).data('type');
+          active[type] ? active[type].call(this) : '';
+        });
+
+
+            table.on('tool(userList)', function (obj) {
+                var layEvent = obj.event,
+                    data = obj.data;
+                if (layEvent === 'edit') { //编辑
+                    var index = layer.open({
+                        title: "Edit",
+                        type: 2,
+                        area: ['460px', '300px'],
+                        content: "useredit.html",
+                        maxmin: true,
+                        btn: ['OK', 'cancel'],
+                        yes: function (index, layero) {
+                            //点击确认触发 iframe 内容中的按钮提交
+                            var submit = layero.find('iframe').contents().find("#LAY-admin-front-submit");
+                            submit.click();
+                        },
+                        success: function (layero, index) {
+                            var body = layero.find('iframe').contents();
+
+                            body.find(".id").val(data.id)
+                            body.find(".username").val(data.userName)
+                            body.find(".password").val(data.passWord);
+
+                        }
+                    })
+                } else if (layEvent === 'del') { //删除
+                    layer.confirm('Are you sure you want to delete it?', { icon: 3, title: 'message', btn: ['OK', 'Cancel'] }, function (index) {
+                        $.get("/api/home/UserDelete?id=" + data.id, function (data, status) {
+                            tableIns.reload();
+                        });
+                        layer.close(index);
+                        // })
+                    });
+                }
+                else if (layEvent == 'link') {
+                    let content = "";
+                    $.get("/api/home/UserView?path=" + data.accessLink, function (data, status) {
+                        console.info(data.data);
+                        content = data.data;
+                        layer.open({
+                            type: 1, // 页面层类型
+                            skin: 'layui-layer-win10', // 2.8+
+                            shade: 0.01,
+                            area: ['60%', '70%'],
+                            maxmin: true,
+                            title: 'View',
+                            content: [
+                                '<div style="padding: 0 8px; height: 20px; line-height: 20px; border-bottom: 1px solid #F0F0F0; box-sizing: border-box; font-size: 12px;">',
+                                '</div>',
+                                '<textarea style="position: absolute; top: 20px; width: 100%; height: calc(100% - 20px); padding: 6px; border: none; resize: none; overflow-y: scroll; box-sizing: border-box;">' + content + '</textarea>'
+                            ].join('')
+                        });
+                    });
+                   
+                }
+            });
+
+  });
+    </script>
+</body>
+</html>

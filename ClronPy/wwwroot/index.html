@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link href="//cdn.staticfile.org/layui/2.9.0/css/layui.css" rel="stylesheet">
+    <script src="//cdn.staticfile.org/layui/2.9.0/layui.js"></script>
+    <title>Upload Files</title>
+    <style>
+        * {
+        }
+
+        /*表单样式*/
+        .form {
+            width: 85%;
+            max-width: 600px;
+            /* max-height: 700px; */
+            background-color: rgba(255, 255, 255, .05);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #000;
+            text-align: center;
+            font-family: "微软雅黑";
+            color: #000;
+        }
+
+            /*表单标题样式*/
+            .form h1 {
+                margin-top: 0;
+                font-weight: 200;
+            }
+
+            .form .txtb {
+                border: 1px solid #aaa;
+                margin: 8px 0;
+                padding: 12px 18px;
+                border-radius: 10px;
+            }
+
+        .txtb label {
+            display: block;
+            text-align: left;
+            color: #000;
+            font-size: 14px;
+        }
+
+        /*姓名 手机 邮箱 备注框样式*/
+        .txtb input,
+        .txtb textarea {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            margin-top: 6px;
+            font-size: 18px;
+            color: #000;
+        }
+
+        /*备注框样式*/
+        .txtb textarea {
+            max-height: 300px;
+        }
+
+        /*提交按钮样式*/
+        .btn {
+            display: block;
+            /* background-color: rgba(156, 39, 176, .5); */
+            padding: 14px 0;
+            color: #000;
+            cursor: pointer;
+            margin-top: 8px;
+            width: 100%;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="Admin/login.html" target="_blank">systemManage</a>
+    <div class="form">
+        <form action="" id="formadd" method="post"  class="layui-form" lay-filter="formadd">
+            <h1>Upload Files</h1>
+            <div class="txtb">
+                <label for="">Auhor:</label>
+                <input type="text" name="author" placeholder="Author">
+            </div>
+            <div class="txtb">
+                <label for="">UId:</label>
+                <input type="text" name="uid" placeholder="Uid">
+            </div>
+            <div class="txtb">
+                <label for="">Update:</label>
+                <input type="file" name="file">
+            </div>
+            <button type="button" class="layui-btn" lay-submit lay-filter="Add">submit</button>
+        </form>
+    </div>
+
+</body>
+
+
+<script type="text/javascript">
+    layui.use(['jquery', 'form'], function () {
+        var $ = layui.$;
+        var form = layui.form;
+        var layer = layui.layer;
+
+
+        form.on('submit(Add)', function (data) {
+
+            var formData = new FormData(document.querySelector("#formadd"));
+            if (formData.get("author") == "" || formData.get("uid") == null || formData.get("file").size == 0) {
+                layer.alert('data is null', { icon: 5 });
+                return false;
+            }
+             $.ajax({
+             url: "/api/home/postfile",
+             type: "post",
+             data: formData,
+             processData: false,  // 不处理数据
+             contentType: false,   // 不设置内容类型
+                 success: function (data) {
+                     layer.alert(data.mes, { icon: 6 });
+                     $("#formadd")[0].reset();
+                     layui.form.render();
+                 }
+              });
+         });
+
+
+    });
+   
+</script>
+</html>

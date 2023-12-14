@@ -1,0 +1,190 @@
+﻿
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SystemManage</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link href="//cdn.staticfile.org/layui/2.9.0/css/layui.css" rel="stylesheet">
+    <script type="text/javascript" src="/Admin/lib/cookies.js"></script>
+    <link rel="stylesheet" href="/Admin/style/admin.css" media="all">
+
+</head>
+<body class="layui-layout-body">
+
+    <div id="LAY_app">
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header">
+                <!-- 头部区域 -->
+
+                <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                    <li class="layui-nav-item" lay-unselect>
+
+                        <dl class="layui-nav-child">
+   
+                            <hr>
+                            <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                        </dl>
+                    </li>
+
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                    </li>
+                    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+                        <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 侧边菜单 -->
+            <div class="layui-side layui-side-menu">
+                <div class="layui-side-scroll">
+                    <div class="layui-logo" lay-href="/Admin/console.html">
+                        <span>SystemManage</span>
+                    </div>
+
+                    <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                        <li data-name="home" class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;" lay-tips="HomePage" lay-direction="2">
+                                <i class="layui-icon layui-icon-home"></i>
+                                <cite>HomePage</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd data-name="console">
+                                    <a lay-href="/Admin/dataembedding.html">DataBase</a>
+                                </dd>
+                                <dd data-name="console">
+                                    <a lay-href="/Admin/user.html">Update</a>
+                                </dd>
+                                <dd data-name="console">
+                                    <a lay-href="/Admin/admin.html">UserManage</a>
+                                </dd>
+                            </dl>
+                        </li>
+ 
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 页面标签 -->
+            <div class="layadmin-pagetabs" id="LAY_app_tabs">
+                <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                    <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect>
+                            <a href="javascript:;"></a>
+                            <dl class="layui-nav-child layui-anim-fadein">
+                                <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                    <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                        <li lay-id="/Admin/console.html" lay-attr="/Admin/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- 主体内容 -->
+            <div class="layui-body" id="LAY_app_body">
+                <div class="layadmin-tabsbody-item layui-show">
+                    <iframe src="/Admin/console.html" frameborder="0" class="layadmin-iframe"></iframe>
+                </div>
+            </div>
+
+            <!-- 辅助元素，一般用于移动设备下遮罩 -->
+            <div class="layadmin-body-shade" layadmin-event="shade"></div>
+        </div>
+    </div>
+
+    <script src="//unpkg.com/layui@2.9.0/dist/layui.js"></script>
+    <script>
+        layui.config({
+            base: '' //静态资源所在路径
+        }).extend({
+            index: '/Admin/lib/index' //主入口模块
+        }).use(['index'], function () {
+            if (getCookie("clronpy") == null) {
+                location.href = '/admin/login.html';
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layout 管理界面大布局示例 - Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.staticfile.org/layui/2.9.0/css/layui.css" rel="stylesheet">
+</head>
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo layui-hide-xs layui-bg-black">SystemManage</div>-->
+<!-- 头部区域（可配合layui 已有的水平导航） -->
+<!--</div>
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">-->
+<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+<!--<ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <li class="layui-nav-item layui-this" ><a href="javascript:;">user</a></li>
+            <li class="layui-nav-item"><a href="javascript:;">admin</a></li>
+        </ul>
+    </div>
+</div>
+<div class="layui-body">-->
+<!-- 内容主体区域 -->
+<!--<div style="padding: 15px;">
+        <blockquote class="layui-elem-quote layui-text">
+            message
+        </blockquote>
+        <div class="layui-card layui-panel">
+            <div class="layui-card-header">
+
+            </div>
+            <div class="layui-card-body">
+
+            </div>
+        </div>
+        <br><br>
+    </div>
+</div>
+<div class="layui-footer">-->
+<!-- 底部固定区域 -->
+<!--copy 2023
+        </div>
+    </div>
+
+    <script src="//cdn.staticfile.org/layui/2.9.0/layui.js"></script>
+    <script>
+        //JS
+        layui.use(['element', 'layer', 'util'], function(){
+          var element = layui.element;
+          var layer = layui.layer;
+          var util = layui.util;
+          var $ = layui.$;
+
+
+        });
+    </script>
+</body>
+</html>-->
